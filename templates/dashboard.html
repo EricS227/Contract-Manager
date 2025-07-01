@@ -12,8 +12,17 @@
         }
 
         h1 {
+            text-align: center;
+            color: #333;
             margin-bottom: 30px;
         }
+
+        .cards {
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
 
         .card {
             background: white;
@@ -21,36 +30,94 @@
             margin-bottom: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .cards h2 {
+            font-size: 24px;
+            color: #333;
+
+        }
+
+        .card p {
+            font-size: 18px;
+            margin-top: 8px;
+            color: #777;
         }
 
         canvas {
+            margin-top: 40px;
+            align-items: center;
             background: white;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 20px;
             margin-top: 30px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
+
+
+        .navbar {
+            background-color: grey;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .graficoContratos {
+            align-items: center;
+        }
+
+
     </style>
 </head>
 <body>
     <h1>Dashboard de Contratos</h1>
 
-    <div class="card">
-        <h2>Total de contratos: {{ total }}</h2>
-    </div>
-     <div class="card">
-        <h2>Contratos Ativos: {{ ativos }}</h2>
-    </div>
-     <div class="card">
-        <h2>Contratos Vencidos: {{ vencidos }}</h2>
-    </div>
-     <div class="card">
-        <h2>Próximos a Vencer (3 dias): {{ proximos }}</h2>
+
+    <div class="navbar">
+        <a href="/">Início</a>
+        <a href="/dashboard">Dashboard</a>
     </div>
 
-    <canvas id="graficoContratos" width="400" height="200"></canvas>
+    <div class="container">
+        <div class="card">
+            <h2>Total de contratos: {{ total }}</h2>
+        </div>
+        <div class="card">
+            <h2>Contratos Ativos: {{ ativos }}</h2>
+        </div>
+        <div class="card">
+            <h2>Contratos Vencidos: {{ vencidos }}</h2>
+        </div>
+        <div class="card">
+            <h2>Próximos a Vencer (3 dias): {{ proximos }}</h2>
+        </div>
+    </div>
 
-    <a href="/">⬅ Voltar</a>
-
+    <div style="text-align: center; margin-top: 40px;">
+        <canvas id="graficoContratos" width="800" height="400"></canvas>
+        <br>
+        <a href="/">⬅ Voltar</a>
+    </div>
+   
 
     <script>
         const data = JSON.parse('{{ chart_data | tojson | safe}}')
@@ -62,7 +129,7 @@
                 datasets: [{
                     label: 'Contratos',
                     data: data.values,
-                    backgroundColor: ['#4caf50', '#f44336', '#ff9800']
+                    backgroundColor: ['#28a745', '#dc3545', '#ffc107']
                 }]
             },
             options: {
@@ -70,6 +137,9 @@
                 plugins: {
                     legend: {display: false},
                     title: { display: true, text: 'Resumo de Contratos'}
+                },
+                scales: {
+                    y : {beginAtZero: true}
                 }
             }
         });
