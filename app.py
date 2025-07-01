@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import requests
 import csv
 import os
+import json
 
 
 app = Flask(__name__)
@@ -28,7 +29,7 @@ def init_db():
         
 
 def enviar_mensagem(numero, mensagem):
-    url = "https://localhost:8000/sendMessage"
+    url = "http://localhost:8000/sendMessage"
     payload = {
         "phone": numero,
         "message": mensagem
@@ -45,6 +46,22 @@ def index():
         cursor = conn.execute("SELECT * FROM contratos")
         contratos = cursor.fetchall()
     return render_template('index.html', contratos=contratos)
+
+
+@app.route('/dashboard')
+def dashboard():
+    with sqlite3.connect(DB_NAME) as conn:
+        total = conn.execute("SELECT COUNT(*) FROM contratos").fetchone()[0]
+        ativos = conn.execute("SELECT COUNT(*) FROM contratos WHERE status='ativo'").fetchone()[0]
+        vencidos = conn.execute("SELECT COUNT(*) FROM contratos WHERE status='vencido'").fetchone()[0]
+        proximos = conn.execute("SELECT COUNT(*) FROM contratos WHERE status='ativo' AND date(data_fim) <= date('now', '+3 day')").fetchone()[0]
+
+    chart_data = {
+        'labels': ['Ativos', 'Vencidos', 'Próximos a vencer'],
+        'values': [ativos, vencidos, proximos]
+    }
+
+    return render_template('dashboard.html', total=total, ativos=ativos, vencidos=vencidos, proximos=proximos, chart_data=json.dumps(chart_data))
 
 
 @app.route('/cadastrar', methods=['POST'])
