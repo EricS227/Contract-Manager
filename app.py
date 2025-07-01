@@ -87,11 +87,13 @@ def verificar_vencimentos():
 
 
     with sqlite3.connect(DB_NAME) as conn:
-        cursor = conn.execute("SELECT cliente, telefone, data_fim FROM contratos where status='ativo'")
-        for cliente, telefone, data_fim in cursor:
+        cursor = conn.execute("SELECT cliente, telefone, data_fim FROM contratos WHERE status='ativo'")
+        for id_, cliente, telefone, data_fim in cursor:
             if data_fim:
                 vencimento = datetime.strptime(data_fim, '%Y-%m-%d').date()
-                if hoje <= vencimento <= data_limite:
+                if hoje > vencimento:
+                    conn.execute("UPDATE contratos SET status='vencido' WHERE id=?", (id_,))
+                elif hoje <= vencimento <= data_limite:
                     mensagem = f"Olá {cliente}, seu contrato vence em {vencimento}. deseja Renovar?"
                     enviar_mensagem(telefone, mensagem)
 
