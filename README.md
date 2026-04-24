@@ -1,4 +1,5 @@
 Contract Manager
+
 Web application for contract management, with automated expiration tracking and WhatsApp notifications for renewal reminders.
 The project demonstrates backend concepts such as CRUD operations, data persistence, scheduled status updates, CSV import, and integration with external services.
 Aplicação web para gerenciamento de contratos, com rastreamento automatizado de vencimentos e notificações via WhatsApp para lembretes de renovação.
