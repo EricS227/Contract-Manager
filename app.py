@@ -104,8 +104,8 @@ def verificar_vencimentos():
 
 
     with sqlite3.connect(DB_NAME) as conn:
-        cursor = conn.execute("SELECT cliente, telefone, data_fim FROM contratos WHERE status='ativo'")
-        for id_, cliente, telefone, data_fim in cursor:
+        cursor = conn.execute("SELECT id, cliente, telefone, data_fim FROM contratos WHERE status='ativo'")
+        for id_, cliente, telefone, data_fim in cursor.fetchall():
             if data_fim:
                 vencimento = datetime.strptime(data_fim, '%Y-%m-%d').date()
                 if hoje > vencimento:
@@ -120,4 +120,3 @@ def verificar_vencimentos():
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
-
